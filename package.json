@@ -1,12 +1,12 @@
 {
   "type": "module",
   "dependencies": {
-    "vite": "^5.3.5"
+    "vite": "^5.3.5",
+    "@tsconfig/strictest": "^2.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@master/css": "^1.37.8",
-    "@tsconfig/strictest": "^2.0.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.7.0",
@@ -32,7 +32,7 @@
     "format:prettier": "prettier -l --write ./",
     "lint": "tsc --noEmit",
     "fix": "run-s -c --print-label lint format:*",
-    "build": "npm run fix && vite build",
+    "build": "vite build",
     "serve": "npm run build && vite preview"
   },
   "author": "urneighbor1",
