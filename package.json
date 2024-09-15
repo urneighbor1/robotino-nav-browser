@@ -1,0 +1,41 @@
+{
+  "type": "module",
+  "dependencies": {
+    "vite": "^5.3.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.8.0",
+    "@master/css": "^1.37.8",
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react-swc": "^3.7.0",
+    "eslint": "^9.8.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^15.9.0",
+    "prettier": "^3.3.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.0.0",
+    "zod": "^3.23.8"
+  },
+  "name": "test",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "run-s --print-label format:*",
+    "format:eslint": "eslint --fix",
+    "format:prettier": "prettier -l --write ./",
+    "lint": "tsc --noEmit",
+    "fix": "run-s -c --print-label lint format:*",
+    "build": "npm run fix && vite build",
+    "serve": "npm run build && vite preview"
+  },
+  "author": "urneighbor1",
+  "license": "MIT",
+  "description": ""
+}

@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "masterco.master-css-language-service",
+    "esbenp.prettier-vscode"
+  ]
+}
