@@ -31,7 +31,7 @@ const ImageView: React.FC<unknown> = () => {
     <img
       src={imageUrl}
       onSelect={Disabled}
-      className="h:85vh max-h:95vh w:auto pointer-events:none user-select:none user-drag:none"
+      className="h:85vh max-h:95vh w:auto b:solid pointer-events:none user-select:none user-drag:none"
     />
   ) : null;
 };
