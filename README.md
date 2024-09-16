@@ -1,9 +1,11 @@
-### Develop
+## Develop
+
 ```bash
 $ npm i
 ```
 
-### Build
+## Build
+
 ```bash
 $ npm --omit=dev
 $ npm run build
