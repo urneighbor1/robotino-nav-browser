@@ -2,7 +2,7 @@ import "@master/css";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import OmniDriveControler from "./components/OmniDriveControler";
+import OmniDriveController from "./components/OmniDriveController";
 import * as Commands from "./util/robotino-rest/Commands";
 import { Robotino } from "./util/robotino-rest/Robotino";
 
@@ -82,7 +82,7 @@ const App: React.FC<unknown> = () => {
         <p>url: {robotino.baseUrl}</p>
       </div>
       <div>
-        <OmniDriveControler />
+        <OmniDriveController />
       </div>
     </RobotinoContext.Provider>
   );

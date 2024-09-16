@@ -8,7 +8,7 @@ import * as Commands from "../util/robotino-rest/Commands";
 import ImageView from "./ImageView";
 import OdometryStatus from "./OdometryStatus";
 
-const OmniDriveControler: React.FC<unknown> = () => {
+const OmniDriveController: React.FC<unknown> = () => {
   const { waitTime, robotino } = useContext(RobotinoContext);
   const [isDragging, setIsDragging] = useState(false);
   const [controlMode, setControlMode] = useState<"y" | "omega">("y");
@@ -96,4 +96,4 @@ const OmniDriveControler: React.FC<unknown> = () => {
   );
 };
 
-export default OmniDriveControler;
+export default OmniDriveController;
