@@ -90,8 +90,10 @@ const OmniDriveController: React.FC<unknown> = () => {
           <ImageView />
         </p>
       </div>
+      <span className="m:0px>*">
       {velocityView}
       <OdometryStatus />
+      </span>
     </>
   );
 };
