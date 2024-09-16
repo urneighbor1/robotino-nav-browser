@@ -4,8 +4,8 @@ import { WithLength } from "../WithLength";
 import type { CommandGet, CommandPost } from "./Command";
 
 const ResponseSchema = z.custom<Response>(async response => response instanceof Response && response.ok);
-const NumberArraySchema = z.array(z.number());
-
+const NumberArrayWithLengthSchema = <L extends number>(length: L) =>
+  z.array(z.number()).length(length) as unknown as z.ZodType<WithLength<number, L>>;
 // CommandGet
 
 export const Test: CommandGet<boolean> = {
@@ -28,18 +28,18 @@ export const GetBumper: CommandGet<boolean> = {
   isAsync: true,
 };
 
-export const GetOdometry = {
+export const GetOdometry: CommandGet<WithLength<number, 7>> = {
   endPoint: "data/odometry",
   Validator: ResponseSchema.transform(async response => await response.json()).pipe(
-    NumberArraySchema.length(7)
+    NumberArrayWithLengthSchema(7)
   ),
   isAsync: true,
-} as unknown as CommandGet<WithLength<number, 7>>;
+};
 
 // CommandPost
 
-export const SetVelocity: CommandPost<number[]> = {
+export const SetVelocity: CommandPost<WithLength<number, 3>> = {
   endPoint: "data/omnidrive",
-  Validator: NumberArraySchema.length(3).transform(value => JSON.stringify(value)),
+  Validator: NumberArrayWithLengthSchema(3).transform(value => JSON.stringify(value)),
   isAsync: false,
 };
