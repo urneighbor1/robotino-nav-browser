@@ -2,6 +2,7 @@ import pluginJs from "@eslint/js";
 import typeScriptESLintParser from "@typescript-eslint/parser";
 import prettier from "eslint-config-prettier";
 import pluginReact from "eslint-plugin-react";
+import pluginReactHooks from "eslint-plugin-react-hooks";
 import pluginSimpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import { version } from "react";
@@ -17,6 +18,7 @@ export default [
   {
     plugins: {
       "simple-import-sort": pluginSimpleImportSort,
+      "react-hooks": pluginReactHooks,
     },
   },
   {
@@ -43,6 +45,8 @@ export default [
   },
   {
     rules: {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "error",
       "no-empty": ["error", { allowEmptyCatch: true }],
       "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off",
