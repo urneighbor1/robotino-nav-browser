@@ -6,6 +6,6 @@
   "trailingComma": "es5",
   "singleQuote": false,
   "jsxSingleQuote": false,
-  "endOfLine": "crlf",
+  "endOfLine": "auto",
   "arrowParens": "avoid"
 }
