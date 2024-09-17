@@ -44,7 +44,7 @@ const OmniDriveController: React.FC<unknown> = () => {
       setVelocity(newVelocity);
       robotino.post(Commands.SetVelocity, [newVelocity.x, newVelocity.y, newVelocity.omega]);
     },
-    [isDragging, dragStartPos, setVelocity]
+    [isDragging, dragStartPos, controlMode, robotino]
   );
 
   const handlePointerUp: React.PointerEventHandler<HTMLDivElement> = () => {
@@ -65,7 +65,7 @@ const OmniDriveController: React.FC<unknown> = () => {
     }, waitTime);
 
     return () => clearInterval(interval);
-  }, [velocity]);
+  }, [robotino, velocity, waitTime]);
 
   const velocityView = useMemo(
     () => (
@@ -91,8 +91,8 @@ const OmniDriveController: React.FC<unknown> = () => {
         </p>
       </div>
       <span className="m:0px>*">
-      {velocityView}
-      <OdometryStatus />
+        {velocityView}
+        <OdometryStatus />
       </span>
     </>
   );

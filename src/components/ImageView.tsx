@@ -25,7 +25,7 @@ const ImageView: React.FC<unknown> = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [robotino]);
+  }, [imageUrl, robotino, waitTime]);
 
   return imageUrl ? (
     <img
