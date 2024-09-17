@@ -34,7 +34,8 @@
     "lint": "tsc --noEmit",
     "fix": "run-p -c --print-label lint format:*",
     "build": "vite build",
-    "serve": "npm run build && vite preview"
+    "serve": "npm run build && vite preview",
+    "prepare": "husky"
   },
   "author": "urneighbor1",
   "license": "MIT",
