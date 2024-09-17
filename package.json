@@ -28,11 +28,11 @@
   "scripts": {
     "dev": "vite",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "run-s --print-label format:*",
+    "format": "run-p --print-label format:*",
     "format:eslint": "eslint . --fix",
     "format:prettier": "prettier -l --write ./",
     "lint": "tsc --noEmit",
-    "fix": "run-s -c --print-label lint format:*",
+    "fix": "run-p -c --print-label lint format:*",
     "build": "vite build",
     "serve": "npm run build && vite preview"
   },
