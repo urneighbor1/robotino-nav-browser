@@ -18,7 +18,7 @@ const OdometryStatus: React.FC<unknown> = () => {
     }, waitTime);
 
     return () => clearInterval(interval);
-  }, [setStatus]);
+  }, [robotino, setStatus, waitTime]);
 
   return (
     <p>

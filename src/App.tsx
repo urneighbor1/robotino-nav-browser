@@ -31,7 +31,7 @@ const IPAddressInput: React.FC<{
       }
       setBaseUrl(newBaseUrl);
     },
-    [setBaseUrl, setGotError]
+    [robotino, setBaseUrl]
   );
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const IPAddressInput: React.FC<{
       3000
     );
     return () => clearInterval(interval);
-  }, [setConnectable]);
+  }, [gotError, robotino, setConnectable]);
 
   const Status = useMemo(
     () =>
