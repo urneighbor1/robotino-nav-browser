@@ -1,15 +1,15 @@
 import { z } from "zod";
 
 interface Command {
-  endPoint: string;
-  Validator: z.ZodType<unknown, z.ZodTypeDef, unknown>;
-  isAsync: boolean;
+  readonly endPoint: string;
+  readonly Validator: z.ZodType<unknown, z.ZodTypeDef, unknown>;
+  readonly isAsync: boolean;
 }
 
 export interface CommandGet<T> extends Command {
-  Validator: z.ZodType<T, z.ZodTypeDef, Response>;
+  readonly Validator: z.ZodType<T, z.ZodTypeDef, Response>;
 }
 
 export interface CommandPost<T> extends Command {
-  Validator: z.ZodType<string, z.ZodTypeDef, T>;
+  readonly Validator: z.ZodType<string, z.ZodTypeDef, T>;
 }
