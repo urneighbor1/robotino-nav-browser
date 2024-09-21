@@ -69,7 +69,7 @@ const IPAddressInput: React.FC<{
 };
 
 const waitTime = 100 + 10;
-const ipAddress = localStorage.getItem("nav-ipAddress") ?? "192.168.0.1:13080";
+const ipAddress = localStorage.getItem("nav-ipAddress") ?? "192.168.0.1";
 const robotino = new Robotino(ipAddress, "web-nav", waitTime - 10);
 
 const App: React.FC<unknown> = () => {
