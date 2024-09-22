@@ -1,81 +1,120 @@
 import "@master/css";
 
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { RobotinoContext } from "../App";
-import { Disabled } from "../util/DisableReactEvent";
-import * as Commands from "../util/robotino-rest/Commands";
+import { useVelocityControl } from "../hooks/useVelocityControl";
 import ImageView from "./ImageView";
 import OdometryStatus from "./OdometryStatus";
+import PointerLockDraggingHandler from "./PointerLockHandler";
 
+type Keys = "w" | "s" | "a" | "d" | "q" | "e";
+type Velocity = { x: number; y: number; omega: number };
+
+const keyToVelocity = new Map<Keys, Velocity>();
+{
+  const KV: { key: Keys; value: Velocity }[] = [
+    { key: "w", value: { x: 0.1, y: 0, omega: 0 } },
+    { key: "s", value: { x: -0.1, y: 0, omega: 0 } },
+    { key: "a", value: { x: 0, y: 0.1, omega: 0 } },
+    { key: "d", value: { x: 0, y: -0.1, omega: 0 } },
+    { key: "q", value: { x: 0, y: 0, omega: (45 * Math.PI) / 180 } },
+    { key: "e", value: { x: 0, y: 0, omega: (-45 * Math.PI) / 180 } },
+  ];
+  KV.map(value => keyToVelocity.set(value.key, value.value));
+}
 const OmniDriveController: React.FC<unknown> = () => {
-  const { waitTime, robotino } = useContext(RobotinoContext);
-  const [isDragging, setIsDragging] = useState(false);
   const [controlMode, setControlMode] = useState<"y" | "omega">("y");
-  const [velocity, setVelocity] = useState({ x: 0, y: 0, omega: 0 });
-  const [totalMovement, setTotalMovement] = useState({ x: 0, y: 0 });
-  const controllerRef = useRef<HTMLSpanElement>(null);
+  const { velocity, updateVelocity } = useVelocityControl();
 
-  const handlePointerDown: React.PointerEventHandler<HTMLSpanElement> = useCallback(event => {
-    setIsDragging(true);
+  const [keyPressed, setKeyPressed] = useState(() => {
+    const keyPressed = new Map<Keys, boolean>();
+    (["w", "s", "a", "d", "q", "e"] as Keys[]).map(k => keyPressed.set(k, false));
+    return keyPressed;
+  });
+
+  const [pointerVelocity, setPointerVelocity] = useState<Velocity>({ x: 0, y: 0, omega: 0 });
+  const [keyboardVelocity, setKeyboardVelocity] = useState<Velocity>({ x: 0, y: 0, omega: 0 });
+
+  const handlePointerDown = useCallback((event: React.PointerEvent<HTMLSpanElement>) => {
     setControlMode(event.button === 2 ? "y" : "omega");
-    setTotalMovement({ x: 0, y: 0 }); // ドラッグ開始時に移動量をリセット
-    event.preventDefault();
-
-    if (controllerRef.current) {
-      controllerRef.current.requestPointerLock();
-    }
   }, []);
 
-  const handlePointerMove: React.PointerEventHandler<HTMLSpanElement> = useCallback(
-    event => {
-      if (!isDragging) return;
-
-      const deltaX = event.movementX;
-      const deltaY = event.movementY;
-
-      setTotalMovement(prev => ({
-        x: prev.x + deltaX,
-        y: prev.y + deltaY,
-      }));
-
-      const maxDistance = 2000; // 感度調整用の値
-
+  const handlePointerMove = useCallback(
+    (_: React.PointerEvent<HTMLSpanElement>, totalMovement: { x: number; y: number }) => {
+      const maxDistance = 2000;
       const x = Math.max(-0.3, Math.min(0.3, -totalMovement.y / maxDistance));
       const y = Math.max(-0.3, Math.min(0.3, -totalMovement.x / maxDistance));
 
-      const newVelocity = {
+      setPointerVelocity({
         x: x,
         y: controlMode === "y" ? y : 0,
         omega: controlMode === "omega" ? y : 0,
-      };
-
-      setVelocity(newVelocity);
-      robotino.post(Commands.SetVelocity, [newVelocity.x, newVelocity.y, newVelocity.omega]);
+      });
     },
-    [isDragging, totalMovement.y, totalMovement.x, controlMode, robotino]
+    [controlMode]
   );
 
-  const handlePointerUp: React.PointerEventHandler<HTMLSpanElement> = () => {
-    setIsDragging(false);
-    document.exitPointerLock();
-    const task = () => {
-      setVelocity({ x: 0, y: 0, omega: 0 });
-      robotino.post(Commands.SetVelocity, [0, 0, 0]);
-    };
-    task();
-    setTimeout(() => {
-      task();
-    }, waitTime * 2);
-  };
+  const handlePointerUp = useCallback(() => {
+    setPointerVelocity({ x: 0, y: 0, omega: 0 });
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase() as Keys;
+
+      console.log(`down: ${key}`);
+      if (keyToVelocity.has(key) && !keyPressed.get(key)) {
+        setKeyPressed(prev => prev.set(key, true));
+        setKeyboardVelocity(prev => {
+          const newVelocity = { ...prev };
+          const value = keyToVelocity.get(key)!;
+          newVelocity.x += value.x;
+          newVelocity.y += value.y;
+          newVelocity.omega += value.omega;
+
+          return newVelocity;
+        });
+      }
+    },
+    [keyPressed]
+  );
+
+  const handleKeyUp = useCallback(
+    (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase() as Keys;
+      console.log(`up: ${key}`);
+      if (keyToVelocity.has(key) && keyPressed.get(key)) {
+        setKeyPressed(prev => prev.set(key, false));
+        setKeyboardVelocity(prev => {
+          const newVelocity = { ...prev };
+          const value = keyToVelocity.get(key)!;
+          newVelocity.x -= value.x;
+          newVelocity.y -= value.y;
+          newVelocity.omega -= value.omega;
+          return newVelocity;
+        });
+      }
+    },
+    [keyPressed]
+  );
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      robotino.post(Commands.SetVelocity, [velocity.x, velocity.y, velocity.omega]);
-    }, waitTime);
+    const combinedVelocity = {
+      x: pointerVelocity.x + keyboardVelocity.x,
+      y: pointerVelocity.y + keyboardVelocity.y,
+      omega: pointerVelocity.omega + keyboardVelocity.omega,
+    };
+    updateVelocity(combinedVelocity);
+  }, [pointerVelocity, keyboardVelocity, updateVelocity]);
 
-    return () => clearInterval(interval);
-  }, [robotino, velocity, waitTime]);
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [handleKeyDown, handleKeyUp]);
 
   const velocityView = useMemo(
     () => (
@@ -89,17 +128,15 @@ const OmniDriveController: React.FC<unknown> = () => {
   return (
     <>
       <div className="h:100% w:100% m:auto display:flex justify-content:center">
-        <span
-          ref={controllerRef}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerUp}
-          onContextMenu={Disabled}
-          className="m:0% p:0% user-select:none user-drag:none"
+        <PointerLockDraggingHandler
+          onPointerLock={handlePointerDown}
+          onPointerDrag={handlePointerMove}
+          onPointerUnlock={handlePointerUp}
         >
-          <ImageView />
-        </span>
+          <span className="m:0% p:0% user-select:none user-drag:none">
+            <ImageView />
+          </span>
+        </PointerLockDraggingHandler>
       </div>
       <span className="m:0px>*">
         {velocityView}
