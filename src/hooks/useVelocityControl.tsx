@@ -20,6 +20,9 @@ export const useVelocityControl = () => {
       robotino.post(Commands.SetVelocity, [velocity.x, velocity.y, velocity.omega]);
     }, waitTime);
 
+    if (velocity.x === 0 && velocity.y === 0 && velocity.omega === 0) {
+      setTimeout(() => clearInterval(interval), 1000);
+    }
     return () => clearInterval(interval);
   }, [robotino, velocity, waitTime]);
 
