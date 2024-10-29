@@ -7,6 +7,7 @@ export class Robotino {
   #baseUrl: string = "";
   #sid: string = "";
   #paused = { state: false, timeout: -1 };
+  #failCount = 0;
   #waitTimeMiliSeconds: number;
 
   constructor(baseUrl: string, sid: string, waitTimeMiliSeconds: number = 60) {
@@ -41,6 +42,8 @@ export class Robotino {
 
   readonly #PAUSE_DURATION = 5000; // 5秒間ポーズを有効とする
 
+  readonly #MAX_TRY = 10; // 最大10回試行する
+
   async get<T>(command: CommandGet<T>): Promise<T> {
     if (this.#paused.state) {
       throw new Error("フェッチが一時停止中です。");
@@ -65,12 +68,16 @@ export class Robotino {
 
       return data;
     } catch (error) {
-      this.#paused = {
-        state: true,
-        timeout: setTimeout(() => {
-          this.#paused = { state: false, timeout: -1 };
-        }, this.#PAUSE_DURATION),
-      };
+      this.#failCount++;
+      if (this.#failCount >= this.#MAX_TRY) {
+        this.#failCount = 0;
+        this.#paused = {
+          state: true,
+          timeout: setTimeout(() => {
+            this.#paused = { state: false, timeout: -1 };
+          }, this.#PAUSE_DURATION),
+        };
+      }
       throw error;
     }
   }
