@@ -25,16 +25,16 @@ type Velocity = { x: number; y: number; omega: number };
 const keyToVelocity = new Map<Keys, Velocity>();
 {
   const KV: { key: Keys; value: Velocity }[] = [
-    { key: "w", value: { x: 0.1, y: 0, omega: 0 } },
-    { key: "s", value: { x: -0.1, y: 0, omega: 0 } },
-    { key: "a", value: { x: 0, y: 0.1, omega: 0 } },
-    { key: "d", value: { x: 0, y: -0.1, omega: 0 } },
+    { key: "w", value: { x: 0.15, y: 0, omega: 0 } },
+    { key: "s", value: { x: -0.15, y: 0, omega: 0 } },
+    { key: "a", value: { x: 0, y: 0.15, omega: 0 } },
+    { key: "d", value: { x: 0, y: -0.15, omega: 0 } },
     { key: "q", value: { x: 0, y: 0, omega: (45 * Math.PI) / 180 } },
     { key: "e", value: { x: 0, y: 0, omega: (-45 * Math.PI) / 180 } },
-    { key: "Numpad8", value: { x: 0.1, y: 0, omega: 0 } },
-    { key: "Numpad2", value: { x: -0.1, y: 0, omega: 0 } },
-    { key: "Numpad4", value: { x: 0, y: 0.1, omega: 0 } },
-    { key: "Numpad6", value: { x: 0, y: -0.1, omega: 0 } },
+    { key: "Numpad8", value: { x: 0.15, y: 0, omega: 0 } },
+    { key: "Numpad2", value: { x: -0.15, y: 0, omega: 0 } },
+    { key: "Numpad4", value: { x: 0, y: 0.15, omega: 0 } },
+    { key: "Numpad6", value: { x: 0, y: -0.15, omega: 0 } },
     { key: "Numpad7", value: { x: 0, y: 0, omega: (45 * Math.PI) / 180 } },
     { key: "Numpad9", value: { x: 0, y: 0, omega: (-45 * Math.PI) / 180 } },
   ];
