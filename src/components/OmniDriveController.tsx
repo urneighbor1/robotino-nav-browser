@@ -129,9 +129,9 @@ const OmniDriveController: React.FC<unknown> = () => {
   useEffect(() => {
     const multiplier = isShiftPressed ? 1.5 : 1;
     const combinedVelocity = {
-      x: (pointerVelocity.x + keyboardVelocity.x) * multiplier,
-      y: (pointerVelocity.y + keyboardVelocity.y) * multiplier,
-      omega: (pointerVelocity.omega + keyboardVelocity.omega) * multiplier,
+      x: pointerVelocity.x + keyboardVelocity.x * multiplier,
+      y: pointerVelocity.y + keyboardVelocity.y * multiplier,
+      omega: pointerVelocity.omega + keyboardVelocity.omega * multiplier,
     };
     updateVelocity(combinedVelocity);
   }, [pointerVelocity, keyboardVelocity, updateVelocity, isShiftPressed]);
